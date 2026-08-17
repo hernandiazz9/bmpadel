@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 
 import { strings } from "@/lib/strings";
+import { TOKENS } from "@/lib/tokens";
 
 /**
  * Next's native manifest route (ADR-003). On iOS this alone is enough for
@@ -19,8 +20,8 @@ export default function manifest(): MetadataRoute.Manifest {
     scope: "/",
     display: "standalone",
     orientation: "portrait",
-    background_color: "#12405A",
-    theme_color: "#DCE7E4",
+    background_color: TOKENS.court,
+    theme_color: TOKENS.glass,
     icons: [
       {
         src: "/icons/icon-192.png",

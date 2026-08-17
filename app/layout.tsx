@@ -4,6 +4,7 @@ import { Archivo, IBM_Plex_Mono, Instrument_Sans } from "next/font/google";
 import { Providers } from "@/components/providers";
 import { ServiceWorkerRegistrar } from "@/components/service-worker";
 import { strings } from "@/lib/strings";
+import { TOKENS } from "@/lib/tokens";
 import "./globals.css";
 
 /* Display face. Variable weight plus the `wdth` axis, which the `headline`
@@ -42,7 +43,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#DCE7E4",
+  themeColor: TOKENS.glass,
   width: "device-width",
   initialScale: 1,
   maximumScale: 1,
