@@ -1,26 +1,182 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* ===========================================================================
+   BMPadel — theme
+   ---------------------------------------------------------------------------
+   Six brand tokens, fixed. Changing any of them requires a new ADR (CONTEXT.md
+   rule 10). Every other colour in the app is either one of these six or a
+   color-mix() derived from them — no loose hex values in components.
+   =========================================================================== */
+
+@theme {
+  /* --- Brand tokens — do not touch without a new ADR --- */
+  --color-court: #12405a;
+  --color-deep: #0a1f2c;
+  --color-glass: #dce7e4;
+  --color-line: #f6f9f8;
+  --color-ball: #d3e04b;
+  --color-clay: #b85c38;
+
+  /* --- Type stacks (families injected by next/font in app/layout.tsx) --- */
+  --font-display: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-instrument-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-plex-mono), ui-monospace, "SFMono-Regular", monospace;
+
+  /* --- Shape: 20px radius everywhere (ADR-009) --- */
+  --radius: 20px;
+
+  /* --- Shadows to zero (ADR-009). Transparent rather than `none` so the
+         composite box-shadow values Tailwind emits stay valid CSS. --- */
+  --shadow-2xs: 0 0 #0000;
+  --shadow-xs: 0 0 #0000;
+  --shadow-sm: 0 0 #0000;
+  --shadow-md: 0 0 #0000;
+  --shadow-lg: 0 0 #0000;
+  --shadow-xl: 0 0 #0000;
+  --shadow-2xl: 0 0 #0000;
+  --inset-shadow-2xs: 0 0 #0000;
+  --inset-shadow-xs: 0 0 #0000;
+  --inset-shadow-sm: 0 0 #0000;
+
+  /* --- Layout: mobile-first, capped at 480px even on desktop (rule 3) --- */
+  --container-app: 480px;
 }
+
+/* ---------------------------------------------------------------------------
+   shadcn semantic variables mapped onto the brand tokens.
+   Surface stack: glass (page) → line (cards) → deep (ink).
+   --------------------------------------------------------------------------- */
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --font-heading: var(--font-display);
+
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+:root {
+  color-scheme: light; /* No dark mode in this POC. */
+
+  --background: var(--color-glass);
+  --foreground: var(--color-deep);
+
+  --card: var(--color-line);
+  --card-foreground: var(--color-deep);
+  --popover: var(--color-line);
+  --popover-foreground: var(--color-deep);
+
+  --primary: var(--color-court);
+  --primary-foreground: var(--color-line);
+
+  --secondary: color-mix(in oklab, var(--color-court) 7%, var(--color-line));
+  --secondary-foreground: var(--color-court);
+
+  --muted: color-mix(in oklab, var(--color-court) 5%, var(--color-line));
+  --muted-foreground: color-mix(in oklab, var(--color-deep) 58%, var(--color-glass));
+
+  /* `accent` is `ball`. It is the most saturated colour in the app and is
+     capped at two appearances per screen (CONTEXT.md rule 2) — that budget is
+     enforced by the components, not by CSS. */
+  --accent: var(--color-ball);
+  --accent-foreground: var(--color-deep);
+
+  --destructive: var(--color-clay);
+  --destructive-foreground: var(--color-line);
+
+  --border: color-mix(in oklab, var(--color-court) 16%, var(--color-glass));
+  --input: color-mix(in oklab, var(--color-court) 20%, var(--color-line));
+  --ring: var(--color-court);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  html {
+    @apply font-sans;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    /* Keep the page background painted behind the safe areas in standalone
+       PWA mode (ADR-003). */
+    background-color: var(--color-glass);
+  }
+
+  /* Headings default to the display face; `headline` below adds the width
+     axis and tracking for the big ones. */
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    font-weight: 800;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* ---------------------------------------------------------------------------
+   Typography utilities — the three faces of the brief.
+   --------------------------------------------------------------------------- */
+
+/* Archivo, weight 800, width axis pushed expanded. Screen titles. */
+@utility headline {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-variation-settings: "wdth" 115;
+  letter-spacing: -0.02em;
+  line-height: 1.04;
+}
+
+/* Archivo, weight 700, same expanded axis. Section labels, card titles. */
+@utility subhead {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-variation-settings: "wdth" 110;
+  letter-spacing: -0.01em;
+  line-height: 1.15;
+}
+
+/* IBM Plex Mono for data: times, levels, prices, slot counts. */
+@utility numeric {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+}
+
+/* Safe areas. The viewport is `viewport-fit=cover` so the page paints edge to
+   edge in standalone mode (ADR-003) — which means content slides under the
+   status bar and the home indicator unless these are applied. */
+@utility pt-safe {
+  padding-top: env(safe-area-inset-top, 0px);
+}
+
+@utility pb-safe {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
 }
