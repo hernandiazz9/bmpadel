@@ -58,7 +58,8 @@ pnpm icons    # regenerates public/icons from the brand tokens
 
 ## Database
 
-`supabase/schema.sql` then `supabase/seed.sql`, in the Supabase SQL editor.
+`supabase/schema.sql`, then `supabase/seed.sql`, then `supabase/storage.sql`,
+in the Supabase SQL editor.
 Both are re-runnable and destructive. Seed times are relative to *now*, so the
 deliberate states (one class full, one with a single slot, one in progress, one
 empty day) hold whenever you re-seed.

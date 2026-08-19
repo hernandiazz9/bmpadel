@@ -16,11 +16,15 @@ Domain rules live in [CONTEXT.md](CONTEXT.md), decisions in
 2. **SQL Editor** → run [`supabase/schema.sql`](supabase/schema.sql), then
    [`supabase/seed.sql`](supabase/seed.sql). Both are destructive and
    re-runnable — run them again any time before a demo to reset the data.
-3. **Authentication → Sign In / Providers → Google**: enable it, and paste the
+3. **SQL Editor** → run [`supabase/storage.sql`](supabase/storage.sql). It
+   creates the public `media` bucket that New post uploads into, with one
+   permissive policy scoped to that bucket — storage RLS cannot be switched off
+   the way table RLS can (ADR-005).
+4. **Authentication → Sign In / Providers → Google**: enable it, and paste the
    client ID and secret from a Google Cloud OAuth 2.0 Web application
    credential. Copy the callback URL Supabase shows you into that credential's
    *Authorised redirect URIs*.
-4. **Authentication → URL Configuration**: set *Site URL* to your deploy URL and
+5. **Authentication → URL Configuration**: set *Site URL* to your deploy URL and
    add these to *Redirect URLs*:
 
    ```
@@ -28,7 +32,7 @@ Domain rules live in [CONTEXT.md](CONTEXT.md), decisions in
    https://<your-vercel-domain>/auth/callback
    ```
 
-5. **Database → Publications**: confirm `supabase_realtime` includes `booking`,
+6. **Database → Publications**: confirm `supabase_realtime` includes `booking`,
    `post`, `like` and `comment`. `schema.sql` adds them, and prints a notice
    instead of failing if the publication is missing.
 

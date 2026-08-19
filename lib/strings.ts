@@ -102,6 +102,78 @@ export const strings = {
       `${booked} of ${capacity} booked`,
   },
 
+  wall: {
+    empty: "Nothing on the wall yet.",
+    emptyCoachHint: "Post something and it lands on every phone in the club.",
+    loadFailed: "Could not load the wall.",
+    newPost: "New post",
+    comments: "Comments",
+    commentPlaceholder: "Say something…",
+    send: "Post",
+    sending: "Posting…",
+    deleteComment: "Delete",
+    deletePost: "Delete post",
+    confirmDeletePost: "Delete this post for everyone?",
+    noComments: "No comments yet.",
+    postNotFound: "That post is gone.",
+    /** e.g. "3 likes" — the count beside the heart. */
+    likeCount: (count: number) => (count === 1 ? "1 like" : `${count} likes`),
+    commentCount: (count: number) =>
+      count === 1 ? "1 comment" : `${count} comments`,
+    like: "Like",
+    unlike: "Unlike",
+  },
+
+  compose: {
+    postTitle: "New post",
+    body: "What's happening at the club?",
+    bodyRequired: "Write something first.",
+    addMedia: "Add photo or video",
+    replaceMedia: "Replace",
+    removeMedia: "Remove",
+    orPasteUrl: "or paste a link to an image or video",
+    urlPlaceholder: "https://…",
+    uploading: "Uploading…",
+    uploadFailed: "Upload failed. You can paste a link instead.",
+    publish: "Publish",
+    publishing: "Publishing…",
+    cancel: "Cancel",
+  },
+
+  newClass: {
+    title: "New class",
+    classTitle: "Title",
+    titlePlaceholder: "Evening Group",
+    type: "Type",
+    court: "Court",
+    date: "Date",
+    time: "Time",
+    duration: "Duration",
+    capacity: "Capacity",
+    price: "Price (AUD)",
+    levelRange: "Level range",
+    notes: "Notes",
+    notesPlaceholder: "Anything they should bring?",
+    create: "Open the class",
+    creating: "Opening…",
+    failed: "Could not open the class. Check the fields and try again.",
+    /** Class types, in the order the picker shows them. */
+    types: {
+      group: "Group",
+      clinic: "Clinic",
+      private: "Private",
+      match_play: "Match play",
+    },
+  },
+
+  me: {
+    upcoming: "Your next classes",
+    upcomingEmpty: "No classes booked. Go and grab one.",
+    coachClasses: "Classes you've opened",
+    coachClassesEmpty: "You haven't opened any classes yet.",
+    newClass: "New class",
+  },
+
   session: {
     errorTitle: "Could not load your profile",
     errorBody:

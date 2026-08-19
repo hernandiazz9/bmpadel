@@ -1,8 +1,10 @@
 "use client";
 
+import { Plus } from "lucide-react";
+import Link from "next/link";
 import { useMemo, useState } from "react";
 
-import { ScreenHeader } from "@/components/app-shell";
+import { useAuth } from "@/components/auth-provider";
 import { ClassStrip } from "@/components/classes/class-strip";
 import { DaySelector } from "@/components/classes/day-selector";
 import { useClassWindow } from "@/hooks/use-classes";
@@ -10,6 +12,8 @@ import { nextOpenClassId } from "@/lib/classes";
 import { strings } from "@/lib/strings";
 
 export default function ClassesPage() {
+  const { user } = useAuth();
+  const isCoach = user?.role === "coach";
   const { dayKeys, byDay, isLoading, isError, now } = useClassWindow();
   const [chosenDay, setChosenDay] = useState<string | null>(null);
 
@@ -22,6 +26,9 @@ export default function ClassesPage() {
     [byDay, selectedDay],
   );
 
+  // A coach never books, so on their screen the accent belongs to New class
+  // instead. That keeps `ball` at exactly one use per screen for both roles,
+  // rather than spending the whole rule 2 ceiling on one view.
   const nextOpenId = useMemo(() => nextOpenClassId(dayClasses), [dayClasses]);
 
   // For the empty-day shortcut: the first later day that has anything on it.
@@ -35,7 +42,21 @@ export default function ClassesPage() {
 
   return (
     <>
-      <ScreenHeader title={strings.nav.classes} />
+      <div className="flex items-start justify-between pt-8 pb-6">
+        <h1 className="headline text-4xl">{strings.nav.classes}</h1>
+        {isCoach ? (
+          // Classes' single `ball`, and it only exists for the coach. On a
+          // player's screen the accent stays reserved for the next class they
+          // can still book.
+          <Link
+            href="/classes/new"
+            aria-label={strings.me.newClass}
+            className="inline-flex size-11 items-center justify-center rounded-lg bg-accent text-accent-foreground"
+          >
+            <Plus className="size-6" aria-hidden />
+          </Link>
+        ) : null}
+      </div>
 
       <DaySelector
         dayKeys={dayKeys}
@@ -56,7 +77,7 @@ export default function ClassesPage() {
         <ClassStrip
           dayKey={selectedDay}
           classes={dayClasses}
-          nextOpenId={nextOpenId}
+          nextOpenId={isCoach ? null : nextOpenId}
           nextDayWithClasses={nextDayWithClasses}
           onSelectDay={setChosenDay}
           now={now}

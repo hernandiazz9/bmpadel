@@ -7,7 +7,7 @@
  */
 
 import { classEndsAt, clubDayKey } from "@/lib/time";
-import type { Booking, ClassSession } from "@/lib/types";
+import type { Booking, ClassSession, ClassType } from "@/lib/types";
 
 /**
  * How a class reads on the strip. Precedence when several could apply:
@@ -132,3 +132,31 @@ export function isOutsideLevelRange(
 export function hasStarted(session: ClassSession, now: Date): boolean {
   return now >= new Date(session.starts_at);
 }
+
+/** The club's courts. A fixed list, not free text — pending the real names. */
+export const COURTS = ["Court 1", "Court 2", "Court 3", "Court 4"] as const;
+
+/** Durations the coach can pick, in minutes. */
+export const DURATIONS = [45, 60, 90, 120] as const;
+
+/**
+ * What each class type implies, so New class arrives pre-filled instead of
+ * asking the coach to remember. Both stay editable — these are defaults, not
+ * rules. Prices are placeholders in AUD until the club confirms them.
+ */
+export const CLASS_TYPE_DEFAULTS: Record<
+  ClassType,
+  { capacity: number; price: number }
+> = {
+  group: { capacity: 8, price: 25 },
+  clinic: { capacity: 6, price: 35 },
+  private: { capacity: 2, price: 90 },
+  match_play: { capacity: 4, price: 20 },
+};
+
+export const CLASS_TYPES = [
+  "group",
+  "clinic",
+  "private",
+  "match_play",
+] as const satisfies readonly ClassType[];
