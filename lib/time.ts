@@ -8,6 +8,17 @@
 
 export const CLUB_TZ = "Australia/Perth";
 
+/**
+ * Perth sits at UTC+8 all year — Western Australia has had no daylight saving
+ * since 2009 (ADR-007 leans on this). Because the offset never moves, a club
+ * day key can be turned into an exact instant by pinning this offset, and a day
+ * is always exactly 24 hours long. Both shortcuts break the moment the club
+ * opens a second site in a DST zone; that is the ADR's stated trigger.
+ */
+export const CLUB_UTC_OFFSET = "+08:00";
+
+const MS_PER_DAY = 24 * 60 * 60 * 1000;
+
 const timeFormatter = new Intl.DateTimeFormat("en-AU", {
   timeZone: CLUB_TZ,
   hour: "2-digit",
@@ -52,16 +63,53 @@ export function formatClubDate(iso: string): string {
   return fullDateFormatter.format(new Date(iso));
 }
 
+const dayKeyFormatter = new Intl.DateTimeFormat("en-CA", {
+  timeZone: CLUB_TZ,
+  year: "numeric",
+  month: "2-digit",
+  day: "2-digit",
+});
+
 /**
  * The calendar day an instant falls on *in club time*, as `YYYY-MM-DD`.
  * Used to group and compare days without dragging the browser zone in.
  */
 export function clubDayKey(date: Date = new Date()): string {
-  const parts = new Intl.DateTimeFormat("en-CA", {
-    timeZone: CLUB_TZ,
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-  }).format(date);
-  return parts;
+  return dayKeyFormatter.format(date);
+}
+
+/** Midnight at the start of a club day key, as a real instant. */
+export function clubDayStart(dayKey: string): Date {
+  return new Date(`${dayKey}T00:00:00${CLUB_UTC_OFFSET}`);
+}
+
+/** Midnight at the end of a club day key — the start of the next day. */
+export function clubDayEnd(dayKey: string): Date {
+  return new Date(clubDayStart(dayKey).getTime() + MS_PER_DAY);
+}
+
+/**
+ * `count` consecutive club day keys, starting with the club day `from` falls on.
+ * This is what the day selector runs on: "today" is today *in Perth*, even when
+ * the phone looking at it is in Spain.
+ */
+export function clubDayKeys(count: number, from: Date = new Date()): string[] {
+  const start = clubDayStart(clubDayKey(from)).getTime();
+  return Array.from({ length: count }, (_, i) =>
+    clubDayKey(new Date(start + i * MS_PER_DAY)),
+  );
+}
+
+/** When a class finishes. */
+export function classEndsAt(startsAt: string, durationMin: number): Date {
+  return new Date(new Date(startsAt).getTime() + durationMin * 60_000);
+}
+
+/** `90` → `"1h 30m"`, `60` → `"1h"`, `45` → `"45m"`. */
+export function formatDuration(durationMin: number): string {
+  const hours = Math.floor(durationMin / 60);
+  const minutes = durationMin % 60;
+  if (hours === 0) return `${minutes}m`;
+  if (minutes === 0) return `${hours}h`;
+  return `${hours}h ${minutes}m`;
 }

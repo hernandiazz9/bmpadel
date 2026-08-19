@@ -53,6 +53,28 @@ export const strings = {
     "7": "Professional",
   } as const,
 
+  classes: {
+    today: "Today",
+    emptyDay: "Nothing on the schedule.",
+    emptyDayHint: "Try another day.",
+    full: "Full",
+    now: "On court",
+    finished: "Finished",
+    loadFailed: "Could not load the timetable.",
+    /** `1` → "1 slot left", `3` → "3 slots left". */
+    slotsLeft: (count: number) =>
+      count === 1 ? "1 slot left" : `${count} slots left`,
+    /** Level range of a class, e.g. "2.0–3.5". */
+    levelRange: (min: string, max: string) => `${min}–${max}`,
+    /** Header count beside the day, e.g. "4 classes". */
+    classCount: (count: number) =>
+      count === 1 ? "1 class" : `${count} classes`,
+    /** Remaining time on the class currently on court. */
+    minutesLeft: (minutes: number) => `${minutes} min left`,
+    /** Points at the next day that actually has something on it. */
+    nextWithClasses: "Next",
+  },
+
   session: {
     errorTitle: "Could not load your profile",
     errorBody:
