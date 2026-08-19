@@ -75,6 +75,33 @@ export const strings = {
     nextWithClasses: "Next",
   },
 
+  classDetail: {
+    back: "Classes",
+    roster: "Who's playing",
+    rosterEmpty: "Nobody booked yet. Be the first.",
+    book: "Book",
+    booking: "Booking…",
+    cancel: "Cancel booking",
+    cancelling: "Cancelling…",
+    booked: "You're in",
+    full: "Full",
+    started: "This class has started",
+    finished: "This class has finished",
+    coachNote: "You're the coach on this one.",
+    classFull: "Class is full",
+    failed: "That didn't work. Try again.",
+    notFound: "That class no longer exists.",
+    /** Soft nudge only — booking outside the range is always allowed (ADR-010). */
+    levelHint: (range: string) =>
+      `This one is aimed at ${range}. You can still book it.`,
+    court: "Court",
+    priceLabel: "Price",
+    price: (amount: string) => `$${amount}`,
+    /** e.g. "5 of 6 booked". */
+    occupancy: (booked: number, capacity: number) =>
+      `${booked} of ${capacity} booked`,
+  },
+
   session: {
     errorTitle: "Could not load your profile",
     errorBody:

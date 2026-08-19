@@ -112,3 +112,23 @@ export function nextOpenClassId(
   // `decorateClasses` already sorted by start time.
   return dayClasses.find((item) => item.state === "open")?.session.id ?? null;
 }
+
+/**
+ * True when the player's level sits outside the class range.
+ *
+ * Drives a soft hint and nothing else — booking outside the range is always
+ * allowed (ADR-010), because the level is self-assessed and there is no match
+ * history behind it to justify blocking anyone.
+ */
+export function isOutsideLevelRange(
+  session: ClassSession,
+  level: number | null,
+): boolean {
+  if (level === null) return false;
+  return level < session.level_min || level > session.level_max;
+}
+
+/** A class can still be joined or left only before it starts. */
+export function hasStarted(session: ClassSession, now: Date): boolean {
+  return now >= new Date(session.starts_at);
+}

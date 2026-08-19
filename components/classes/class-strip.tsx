@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+
 import type { ClassState, DecoratedClass } from "@/lib/classes";
 import { formatLevel } from "@/lib/level";
 import { strings } from "@/lib/strings";
@@ -127,16 +129,21 @@ function ClassRow({
   // as it burns down and what is left to come dominates the screen.
   if (item.state === "finished") {
     return (
-      <li className="grid grid-cols-[4.5rem_1fr_auto] items-baseline gap-3 px-4 py-2">
-        <span className="numeric text-sm text-muted-foreground">
-          {formatClubTime(session.starts_at)}
-        </span>
-        <span className="truncate text-sm text-muted-foreground">
-          {session.title}
-        </span>
-        <span className="numeric text-xs text-muted-foreground">
-          {item.booked}/{session.capacity}
-        </span>
+      <li>
+        <Link
+          href={`/classes/${session.id}`}
+          className="grid grid-cols-[4.5rem_1fr_auto] items-baseline gap-3 px-4 py-2"
+        >
+          <span className="numeric text-sm text-muted-foreground">
+            {formatClubTime(session.starts_at)}
+          </span>
+          <span className="truncate text-sm text-muted-foreground">
+            {session.title}
+          </span>
+          <span className="numeric text-xs text-muted-foreground">
+            {item.booked}/{session.capacity}
+          </span>
+        </Link>
       </li>
     );
   }
@@ -144,43 +151,50 @@ function ClassRow({
   const tone = isNextOpen ? NEXT_OPEN_TONE : TONES[item.state];
 
   return (
-    <li
-      className={cn(
-        "grid grid-cols-[4.5rem_1fr_auto] gap-3 rounded-lg border px-4 py-3",
-        tone.card,
-      )}
-    >
-      {/* The mono time ladder — the column the eye runs down. */}
-      <div className="flex flex-col">
-        <span className={cn("numeric text-[22px] leading-none font-semibold", tone.time)}>
-          {formatClubTime(session.starts_at)}
-        </span>
-        <span className={cn("numeric mt-1 text-[11px] leading-none", tone.endTime)}>
-          {formatClubTime(endsAt)}
-        </span>
-      </div>
+    <li>
+      <Link
+        href={`/classes/${session.id}`}
+        className={cn(
+          "grid grid-cols-[4.5rem_1fr_auto] gap-3 rounded-lg border px-4 py-3 transition-colors",
+          tone.card,
+        )}
+      >
+        {/* The mono time ladder — the column the eye runs down. */}
+        <div className="flex flex-col">
+          <span
+            className={cn("numeric text-[22px] leading-none font-semibold", tone.time)}
+          >
+            {formatClubTime(session.starts_at)}
+          </span>
+          <span className={cn("numeric mt-1 text-[11px] leading-none", tone.endTime)}>
+            {formatClubTime(endsAt)}
+          </span>
+        </div>
 
-      <div className="min-w-0">
-        <p className={cn("subhead truncate text-[17px]", tone.title)}>
-          {session.title}
-        </p>
-        <p className={cn("numeric mt-1 truncate text-[11px]", tone.meta)}>
-          {session.court} ·{" "}
-          {strings.classes.levelRange(
-            formatLevel(session.level_min),
-            formatLevel(session.level_max),
-          )}
-        </p>
-      </div>
+        <div className="min-w-0">
+          <p className={cn("subhead truncate text-[17px]", tone.title)}>
+            {session.title}
+          </p>
+          <p className={cn("numeric mt-1 truncate text-[11px]", tone.meta)}>
+            {session.court} ·{" "}
+            {strings.classes.levelRange(
+              formatLevel(session.level_min),
+              formatLevel(session.level_max),
+            )}
+          </p>
+        </div>
 
-      <div className="flex flex-col items-end">
-        <span className={cn("numeric text-sm leading-none font-medium", tone.fraction)}>
-          {item.booked}/{session.capacity}
-        </span>
-        <span className={cn("numeric mt-1.5 text-[11px] leading-none", tone.status)}>
-          {statusFor(item, now)}
-        </span>
-      </div>
+        <div className="flex flex-col items-end">
+          <span
+            className={cn("numeric text-sm leading-none font-medium", tone.fraction)}
+          >
+            {item.booked}/{session.capacity}
+          </span>
+          <span className={cn("numeric mt-1.5 text-[11px] leading-none", tone.status)}>
+            {statusFor(item, now)}
+          </span>
+        </div>
+      </Link>
     </li>
   );
 }
