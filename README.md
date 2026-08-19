@@ -63,6 +63,51 @@ installs from the browser:
 pnpm build && pnpm start
 ```
 
+## Deploying to Vercel
+
+1. Push this repo to GitHub, then [import it on Vercel](https://vercel.com/new).
+   Vercel auto-detects Next.js and runs the `build` script from
+   `package.json` — already `next build --webpack`, so Turbopack never enters
+   the picture (see the note below).
+2. **Project Settings → Environment Variables**, add for *Production* (and
+   *Preview*, so PR previews work too):
+
+   ```
+   NEXT_PUBLIC_SUPABASE_URL=<from Supabase Project Settings → API>
+   NEXT_PUBLIC_SUPABASE_ANON_KEY=<the publishable key, same section>
+   NEXT_PUBLIC_COACH_EMAIL=<the coach's Google address>
+   ```
+
+3. Deploy. Vercel gives you a domain like `https://<project>.vercel.app`.
+4. Back in Supabase, **Authentication → URL Configuration → Redirect URLs**,
+   add:
+
+   ```
+   https://<project>.vercel.app/auth/callback
+   ```
+
+   Google's own OAuth client does **not** need updating — its redirect URI
+   points at Supabase's `/auth/v1/callback`, which never changes. Only
+   Supabase's own redirect allowlist needs the new domain.
+5. Every `git push` to the connected branch redeploys automatically from
+   there on.
+
+`engines.node` in `package.json` pins Node 22.x, matching the closed stack —
+Vercel picks that major version rather than its own default.
+
+### PWA on Vercel
+
+No extra configuration: Serwist builds `public/sw.js` as part of `next build`
+the same way it does locally, and the manifest and icons use relative URLs, so
+they resolve against whatever domain serves the deploy. To install the app,
+open the Vercel URL as anyone would install a PWA — the browser's own
+"Add to Home Screen" / install-icon flow.
+
+Serwist is disabled in `next dev` (Turbopack conflict, see below), so a
+preview deploy is the first place the install prompt actually appears — the
+same reason local installability is checked with `pnpm build && pnpm start`
+rather than `pnpm dev`.
+
 ## Stack
 
 Next.js App Router (all client components) · Supabase (Postgres, Storage,
