@@ -44,3 +44,8 @@ next-env.d.ts
 # Serwist output
 /public/sw.js
 /public/sw.js.map
+
+# biomech prototype (python)
+/biomech/.venv
+/biomech/__pycache__
+/biomech/data/*.json
