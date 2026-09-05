@@ -48,5 +48,9 @@ next-env.d.ts
 # biomech prototype (python)
 /biomech/.venv
 /biomech/__pycache__
-/biomech/data/*
-!/biomech/data/.gitkeep
+/biomech/data/incoming/*
+!/biomech/data/incoming/.gitkeep
+/biomech/data/raw/
+/biomech/data/annotated/
+/biomech/data/library.json
+/biomech/data/history.json

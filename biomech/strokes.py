@@ -3,6 +3,8 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
+from text_utils import strip_accents
+
 
 @dataclass(frozen=True)
 class CameraSetup:
@@ -74,3 +76,25 @@ def get_stroke(stroke_id: str) -> Stroke:
         if stroke.id == stroke_id:
             return stroke
     raise ValueError(f"Golpe desconocido: {stroke_id}")
+
+
+# Alias reconocidos al leer el golpe desde un nombre de archivo (ver organize_clips.py).
+# Las claves ya estan sin acentos porque resolve_stroke_id normaliza antes de buscar.
+_ALIASES: dict[str, str] = {
+    "bandeja": "bandeja",
+    "vibora": "vibora",
+    "drive": "drive",
+    "derecha": "drive",
+    "reves": "reves",
+    "saque": "saque",
+    "servicio": "saque",
+    "remate": "remate",
+    "smash": "remate",
+    "globo": "globo",
+    "lob": "globo",
+}
+
+
+def resolve_stroke_id(text: str) -> str | None:
+    """Reconoce un id de golpe a partir de texto libre (nombre de archivo, input manual)."""
+    return _ALIASES.get(strip_accents(text.strip().lower()))
