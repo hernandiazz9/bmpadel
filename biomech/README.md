@@ -24,9 +24,10 @@ pip install -r requirements.txt
 streamlit run app.py
 ```
 
-Abre una pagina local. Flujo: elegis el golpe (bandeja, drive, etc.), la mano
-dominante del jugador, subis un clip (mp4/mov, 10-15s, de perfil para la
-mayoria de los golpes) y apretas "Analizar".
+Abre una pagina local. Flujo: elegis el golpe (bandeja, drive, etc.) y la app
+te muestra como poner la camara para ese golpe en particular (angulo,
+distancia, altura, fps minimo, encuadre); subis un clip siguiendo esa guia y
+apretas "Analizar".
 
 ## Que calcula hoy
 
@@ -66,5 +67,6 @@ mayoria de los golpes) y apretas "Analizar".
 
 ## Historial
 
-Cada analisis que se guarda desde la app queda en `data/history.json`
-(ignorado por git, es data local del coach).
+"Guardar en el historial" escribe una fila en `data/history.json` con las
+metricas del impacto y copia el video anotado a `data/videos/`. Toda la
+carpeta `data/` esta ignorada por git: es data local del coach, no del repo.

@@ -18,7 +18,9 @@ from strokes import STROKES, get_stroke
 from video_utils import read_frames, write_video
 
 DATA_DIR = Path(__file__).parent / "data"
+VIDEOS_DIR = DATA_DIR / "videos"
 DATA_DIR.mkdir(exist_ok=True)
+VIDEOS_DIR.mkdir(exist_ok=True)
 HISTORY_FILE = DATA_DIR / "history.json"
 
 st.set_page_config(page_title="BMPadel - Analisis biomecanico", layout="wide")
@@ -32,7 +34,15 @@ with st.sidebar:
         format_func=lambda sid: get_stroke(sid).label,
     )
     stroke = get_stroke(stroke_id)
-    st.caption(f"Angulo de camara recomendado: {stroke.recommended_angle}")
+    with st.expander("Como poner la camara para este golpe", expanded=True):
+        camera = stroke.camera
+        st.markdown(
+            f"- **Angulo:** {camera.angle}\n"
+            f"- **Distancia:** {camera.distance_m}\n"
+            f"- **Altura:** {camera.height}\n"
+            f"- **FPS minimo:** {camera.fps_min} (240 slow-mo si el telefono lo permite)\n"
+            f"- **Encuadre:** {camera.framing}"
+        )
 
     dominant_side = st.radio(
         "Mano dominante del jugador",
@@ -105,15 +115,21 @@ if "analysis" in st.session_state:
     st.pyplot(fig)
 
     if st.button("Guardar en el historial"):
+        timestamp = datetime.now(timezone.utc)
+        video_filename = f"{timestamp.strftime('%Y%m%dT%H%M%S')}_{data['stroke'].id}.mp4"
+        video_path = VIDEOS_DIR / video_filename
+        video_path.write_bytes(data["video_bytes"])
+
         entry = {
-            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "timestamp": timestamp.isoformat(),
             "alumno": data["alumno"] or None,
             "golpe": data["stroke"].id,
             "mano_dominante": data["dominant_side"],
             "fps": data["fps"],
+            "video": f"videos/{video_filename}",
             **summary,
         }
         history = json.loads(HISTORY_FILE.read_text()) if HISTORY_FILE.exists() else []
         history.append(entry)
         HISTORY_FILE.write_text(json.dumps(history, indent=2, ensure_ascii=False))
-        st.success("Guardado.")
+        st.success(f"Guardado ({video_filename}).")
